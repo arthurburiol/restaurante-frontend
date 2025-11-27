@@ -11,7 +11,7 @@ export default function Pagamento() {
   const id_comanda = Number(params.id_comanda);
   const total = Number(params.total);
 
-  // Estados do dropdown
+
   const [open, setOpen] = useState(false);
   const [formaPagamento, setFormaPagamento] = useState(null);
 

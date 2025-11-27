@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import Api from "../Servico/Api";
 
-// Máscara para DD/MM/AAAA
 function aplicarMascaraData(texto) {
   let limpo = texto.replace(/\D/g, "");
 
@@ -18,7 +17,6 @@ function aplicarMascaraData(texto) {
   );
 }
 
-// Converte DD/MM/AAAA -> AAAA-MM-DD
 function converterData(dataBR) {
   const [dia, mes, ano] = dataBR.split("/");
   return `${ano}-${mes}-${dia}`;
@@ -40,13 +38,11 @@ export default function RelatorioPeriodo() {
       const dataIniFormatada = converterData(dataInicio);
       const dataFimFormatada = converterData(dataFim);
 
-      // Requisição dos itens
       const respostaItens = await Api.api.post("/relatorio/itensperiodo", {
         data_inicio: dataIniFormatada,
         data_fim: dataFimFormatada
       });
 
-      // Requisição do total
       const respostaTotal = await Api.api.post("/relatorio/totalperiodo", {
         data_inicio: dataIniFormatada,
         data_fim: dataFimFormatada
@@ -55,7 +51,6 @@ export default function RelatorioPeriodo() {
       console.log("Itens:", respostaItens.data);
       console.log("Total:", respostaTotal.data);
 
-      // Tratamento dos itens
       const itensTratados = respostaItens.data.map((item, index) => ({
         id: index + 1,
         descricao: item.nome,

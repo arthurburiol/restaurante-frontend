@@ -34,7 +34,6 @@ export default function Carrinho() {
 
       limpar();
 
-      // REDIRECIONA PARA A TELA DE PAGAMENTO
       router.push({
         pathname: "/pagamento",
         params: {

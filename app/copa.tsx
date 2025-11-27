@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import Api from "../Servico/Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 export default function Copa() {
   const [pedidos, setPedidos] = useState([]);
   const [usuario, setUsuario] = useState(null);
-  
+    const router = useRouter();
 
   async function carregarPedidos() {
     try {
@@ -26,22 +27,20 @@ export default function Copa() {
     carregarPedidos();
   }, []);
 
-  // Função para alterar status
   async function alterarStatus(id, statusAtual) {
    if (!usuario) return;
 
-    // Só GARCOM ou ADMIN podem alterar
     if (usuario.tipo !== "GARCOM" && usuario.tipo !== "ADMIN") return;
 
     let novoStatus = "";
     
     if (statusAtual === "PENDENTE") novoStatus = "EM_EXECUCAO";
     else if (statusAtual === "EM_EXECUCAO") novoStatus = "ENTREGUE";
-    else return; // se já estiver ENTREGUE, não faz nada
+    else return; 
 
     try {
       await Api.api.put(`/comandaitens/alterarStatusItem/${id}`, { status: novoStatus });
-      carregarPedidos(); // recarrega a lista
+      carregarPedidos(); 
     } catch (error) {
       console.log("Erro ao alterar status:", error);
     }
@@ -73,7 +72,6 @@ export default function Copa() {
                   Status: {item.status}
                 </Text>
 
-                {/* Botão para garçom alterar status */}
                {usuario && (usuario.tipo === "GARCOM" || usuario.tipo === "ADMIN") && item.status !== "ENTREGUE" && (
                   <TouchableOpacity 
                     style={styles.statusBtn} 
@@ -91,17 +89,18 @@ export default function Copa() {
       </View>
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Novo</Text>
-        </TouchableOpacity>
-
+        {usuario && (usuario.tipo === "GARCOM" || usuario.tipo === "ADMIN" || usuario.tipo === "COZINHA") && (
+        <TouchableOpacity style={styles.button}
+        onPress={() => router.push("/produto")}>
+          <Text style={styles.buttonText}>Produtos</Text> 
+        </TouchableOpacity>  
+   )} 
         <TouchableOpacity style={styles.button} onPress={carregarPedidos}>
           <Text style={styles.buttonText}>Atualizar</Text>
         </TouchableOpacity>
+      
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Histórico</Text>
-        </TouchableOpacity>
+        
       </View>
 
     </View>

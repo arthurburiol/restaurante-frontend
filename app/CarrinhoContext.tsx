@@ -10,7 +10,6 @@ export function CarrinhoProvider({ children }) {
   }
 
   function remover(itemParaRemover) {
-  // Encontra o índice do primeiro item que é estritamente igual ao itemParaRemover
   const indexParaRemover = itens.findIndex(item => item === itemParaRemover);
 
   if (indexParaRemover !== -1) {
@@ -25,7 +24,6 @@ export function CarrinhoProvider({ children }) {
   function total() {
     return itens.reduce((acc, item) => acc + Number(item.preco), 0);
   }
-  // ➡️ NOVO: Função para contar itens por tipo
   function contagemItens() {
     const pratos = itens.filter(item => item.tipo === "PRATO").length;
     const bebidas = itens.filter(item => item.tipo === "BEBIDA").length;

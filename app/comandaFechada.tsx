@@ -3,18 +3,16 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Api from "../Servico/Api";
 
-// Tipagem do React Navigation
 type RootStackParamList = {
   ComandaItens: { id_comanda: number };
 };
 
-// Tipagem de cada comanda
 type ComandaType = {
   id: number;
   cpf_usuario: string;
-  total?: number | string; // pode vir como string do backend
+  total?: number | string; 
   status: string;
-  data_abertura?: string; // opcional
+  data_abertura?: string; 
   usuario?: {
     nome: string;
     cpf: string;

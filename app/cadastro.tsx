@@ -86,10 +86,7 @@ export default function Cadastro() {
 
         Alert.alert("Sucesso", "Usuário atualizado com sucesso!");
 
-        // Atualiza AsyncStorage caso o logado seja o mesmo editado
-        if (usuarioa && usuarioa.id == idusuario) {
-          await AsyncStorage.setItem("usuario", JSON.stringify(resposta.data));
-        }
+        
 
         if (usuarioa && usuarioa.tipo === "ADMIN") {
           router.replace("/usuarios");
@@ -167,31 +164,33 @@ export default function Cadastro() {
           keyboardType="phone-pad"
         />
 
-        {usuarioa && usuarioa.tipo === "ADMIN" && (
-          <View style={styles.dropdownWrapper}>
-            <DropDownPicker
-              open={open}
-              value={tipo}
-              items={items}
-              setOpen={setOpen}
-              setValue={setTipo}
-              setItems={setItems}
-              placeholder="Tipo de Usuário"
-              placeholderStyle={{ color: "#aaa" }}
-              style={styles.dropdownContainer}
-              containerStyle={styles.dropdownWrap}
-              textStyle={styles.dropdownText}
-              dropDownContainerStyle={styles.dropDownContainer}
-              itemSeparator={true}
-              itemSeparatorStyle={{ backgroundColor: "#2c2c2c" }}
-              zIndex={3000}
-              zIndexInverse={1000}
-              listItemLabelStyle={{ color: "white" }}
-              selectedItemLabelStyle={{ fontWeight: "bold" }}
-              arrowIconStyle={{ tintColor: "white" }}
-            />
-          </View>
-        )}
+        {usuarioa &&
+      usuarioa.tipo === "ADMIN" &&
+      String(usuarioa.id) !== String(idusuario) && (
+        <View style={styles.dropdownWrapper}>
+          <DropDownPicker
+            open={open}
+            value={tipo}
+            items={items}
+            setOpen={setOpen}
+            setValue={setTipo}
+            setItems={setItems}
+            placeholder="Tipo de Usuário"
+            placeholderStyle={{ color: "#aaa" }}
+            style={styles.dropdownContainer}
+            containerStyle={styles.dropdownWrap}
+            textStyle={styles.dropdownText}
+            dropDownContainerStyle={styles.dropDownContainer}
+            itemSeparator={true}
+            itemSeparatorStyle={{ backgroundColor: "#2c2c2c" }}
+            zIndex={3000}
+            zIndexInverse={1000}
+            listItemLabelStyle={{ color: "white" }}
+            selectedItemLabelStyle={{ fontWeight: "bold" }}
+            arrowIconStyle={{ tintColor: "white" }}
+          />
+        </View>
+    )}
 
         <TextInput
           placeholder="Usuário (login)"

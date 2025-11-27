@@ -55,10 +55,12 @@ export default function Home() {
         <MaterialIcons name="logout" size={26} color="#fff" />
         <Text style={styles.logoutText}>Sair</Text>
       </TouchableOpacity>
+      
 
       <View style={styles.logoContainer}>
         <Image source={Logo} style={styles.logo} />
       </View>
+      
 
       <View style={styles.grid}>
 

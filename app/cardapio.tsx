@@ -8,14 +8,13 @@ import { useRouter } from "expo-router";
 export default function CardapioUsuario() {
   const router = useRouter();
 
-  // ➡️ ATUALIZADO: Incluir contagemItens
   const { itens, adicionar, contagemItens } = useCarrinho(); 
 
   const [categoria, setCategoria] = useState("PRATO");
   const [produtosPratos, setProdutosPratos] = useState([]);
   const [produtosBebidas, setProdutosBebidas] = useState([]);
 
-  // ➡️ NOVO: Obter a contagem separada
+
   const { pratos, bebidas } = contagemItens ? contagemItens() : { pratos: 0, bebidas: 0 };
 
 
@@ -74,16 +73,13 @@ export default function CardapioUsuario() {
         )}
       />
 
-      {/* Barra inferior */}
       <View style={styles.cartBar}>
         
-        {/* ➡️ ATUALIZADO: Contador de Comidas */}
         <View style={styles.itemCounter}>
             <MaterialIcons name="restaurant-menu" size={20} color="#fff" />
             <Text style={styles.cartText}>{pratos}</Text>
         </View>
 
-        {/* ➡️ NOVO: Contador de Bebidas */}
         <View style={styles.itemCounter}>
             <MaterialIcons name="local-drink" size={20} color="#fff" />
             <Text style={styles.cartText}>{bebidas}</Text>
@@ -162,7 +158,6 @@ const styles = StyleSheet.create({
   itemPrice: { color: "#aaa", marginTop: 4 },
   addButton: { padding: 10, backgroundColor: "#d43c14", borderRadius: 10 },
   
-  // ➡️ NOVO ESTILO PARA O CONTADOR
   itemCounter: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -179,7 +174,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderTopWidth: 2,
     borderTopColor: "#d43c14",
-    // ➡️ ATUALIZADO: Usar space-between para distribuir bem os 3 elementos
     flexDirection: "row",
     justifyContent: "space-between", 
     alignItems: "center",

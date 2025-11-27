@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import Api from "../Servico/Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 export default function Cozinha() {
 
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usuario, setUsuario] = useState(null);
+
+  const router = useRouter(); 
 
   async function carregarPedidos() {
     try {
@@ -21,12 +24,10 @@ export default function Cozinha() {
     }
   }
 
-  
- async function carregarUsuario() {
+  async function carregarUsuario() {
     const json = await AsyncStorage.getItem("usuario");
     if (json) setUsuario(JSON.parse(json));
   }
-
 
   useEffect(() => {
     carregarUsuario();
@@ -34,38 +35,40 @@ export default function Cozinha() {
   }, []);
 
   async function alterarStatus(id, statusAtual) {
-  if (!usuario) return;
+    if (!usuario) return;
 
-  // APENAS COZINHA ou ADMIN
-  if (usuario.tipo !== "COZINHA" && usuario.tipo !== "ADMIN") return;
+    if (usuario.tipo !== "COZINHA" && usuario.tipo !== "ADMIN") return;
 
-  let novoStatus = "";
+    let novoStatus = "";
 
-  if (statusAtual === "PENDENTE") novoStatus = "EM_EXECUCAO";
-  else if (statusAtual === "EM_EXECUCAO") novoStatus = "PRONTO";
-  else return;
+    if (statusAtual === "PENDENTE") novoStatus = "EM_EXECUCAO";
+    else if (statusAtual === "EM_EXECUCAO") novoStatus = "PRONTO";
+    else return;
 
-  try {
-    await Api.api.put(`/comandaitens/alterarStatusItem/${id}`, { status: novoStatus });
-    carregarPedidos(); 
-  } catch (error) {
-    console.log("Erro ao alterar status:", error);
+    try {
+      await Api.api.put(`/comandaitens/alterarStatusItem/${id}`, { status: novoStatus });
+      carregarPedidos();
+    } catch (error) {
+      console.log("Erro ao alterar status:", error);
+    }
   }
-}
 
   return (
     <View style={styles.container}>
+
       <Text style={styles.title}>Cozinha</Text>
 
       {loading && (
-        <ActivityIndicator size={40} color="#fff" style={{ marginTop: 20 }} />
+        <ActivityIndicator size={40} color="#fff" style={{ marginBottom: 20 }} />
       )}
 
       <ScrollView style={{ width: "100%" }}>
         {pedidos.map((p) => (
           <View key={p.id} style={styles.card}>
 
-            <Text style={styles.cardTitle}>Cliente: {p.comanda?.usuario?.nome || p.comanda?.cpf_usuario || "Não informado"}</Text>
+            <Text style={styles.cardTitle}>
+              Cliente: {p.comanda?.usuario?.nome || p.comanda?.cpf_usuario || "Não informado"}
+            </Text>
 
             <Text style={styles.cardItem}>
               {p.produto?.nome}  • {p.quantidade}x
@@ -78,25 +81,41 @@ export default function Cozinha() {
             <Text style={styles.status}>
               Status: {p.status}
             </Text>
-          {usuario &&
-          (usuario.tipo === "COZINHA" || usuario.tipo === "ADMIN") &&
-          p.status !== "PRONTO" && (
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => alterarStatus(p.id, p.status)}
-            >
-              <Text style={styles.btnText}>
-              {p.status === "PENDENTE"
-                ? "Marcar como EM EXECUÇÃO"
-                : p.status === "EM_EXECUCAO"
-                ? "Marcar como PRONTO"
-                : "Concluído"}
-            </Text>
-            </TouchableOpacity>
-        )}
+
+            {usuario &&
+              (usuario.tipo === "COZINHA" || usuario.tipo === "ADMIN") &&
+              p.status !== "PRONTO" && (
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => alterarStatus(p.id, p.status)}
+                >
+                  <Text style={styles.btnText}>
+                    {p.status === "PENDENTE"
+                      ? "Marcar como EM EXECUÇÃO"
+                      : "Marcar como PRONTO"}
+                  </Text>
+                </TouchableOpacity>
+              )}
           </View>
         ))}
       </ScrollView>
+
+  
+      <View style={styles.buttonRow}>
+    {usuario && (usuario.tipo === "GARCOM" || usuario.tipo === "ADMIN" || usuario.tipo === "COZINHA") && (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/produto")} // 🔥 AJUSTADO
+        >
+          <Text style={styles.buttonText}>Produtos</Text>
+        </TouchableOpacity>
+      )}
+        <TouchableOpacity style={styles.button} onPress={carregarPedidos}>
+          <Text style={styles.buttonText}>Atualizar</Text>
+        </TouchableOpacity>
+
+      </View>
+
     </View>
   );
 }
@@ -154,6 +173,24 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     textAlign: "center",
+    fontWeight: "600",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: "#d43c14",
+    marginHorizontal: 5,
+    paddingVertical: 12,
+    borderRadius: 30,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
   },
 });

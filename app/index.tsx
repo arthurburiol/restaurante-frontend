@@ -30,7 +30,7 @@ export default function Login() {
         await AsyncStorage.setItem("usuario", JSON.stringify(dadosUsuario));
         await Api.setTokenAxios();
 
-        router.push("/home");   // ⭐ AGORA FUNCIONA COM EXPO ROUTER
+        router.push("/home");  
       } else {
         Alert.alert("Erro", "Falha no login");
       }

@@ -9,16 +9,10 @@ export default function Relatorio() {
 
   async function atualizar() {
     try {
-
-      // 1️⃣ Buscar relatório por itens
       const respostaItens = await Api.api.get("/relatorio/itens");
       
-
-      // 2️⃣ Buscar total do dia 
       const respostaTotal = await Api.api.get("/relatorio/total");
       
-
-      // Ajustar estrutura para o state
       const dadosItens = respostaItens.data.map((item, index) => ({
         id: index + 1,
         descricao: item.nome,

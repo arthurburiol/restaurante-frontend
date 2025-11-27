@@ -5,7 +5,7 @@ import Api from "../Servico/Api";
 import { useRoute, RouteProp } from "@react-navigation/native";
 
 type ComandaItemType = {
-  id?: number; // opcional porque o backend pode usar outro nome
+  id?: number; 
   id_comanda?: number;
   id_produto?: number;
   quantidade: number;
@@ -18,23 +18,20 @@ type ComandaItemType = {
   };
 };
 
-// Tipagem simples para a rota (ajuste o name da tela se quiser)
 type RootStackParamList = {
   ComandaItens: { id_comanda: number } | undefined;
 };
 
-// usamos RouteProp para tipar useRoute
 type ComandaItensRouteProp = RouteProp<RootStackParamList, "ComandaItens">;
 
 export default function ComandaItens() {
   const route = useRoute<ComandaItensRouteProp>();
-  const id_comanda = route?.params?.id_comanda; // seguro contra undefined
+  const id_comanda = route?.params?.id_comanda; 
 
   const [itens, setItens] = useState<ComandaItemType[]>([]);
 
   async function carregarItens() {
     if (!id_comanda) {
-      // evita chamada inválida quando o parâmetro não foi passado
       console.warn("id_comanda não fornecido na rota");
       setItens([]);
       return;
@@ -42,7 +39,6 @@ export default function ComandaItens() {
 
     try {
       const response = await Api.api.get(`/comandaitens/${id_comanda}`);
-      // cast explícito (ajuste se a API devolver envelopamento)
       setItens(response.data as ComandaItemType[]);
     } catch (error) {
       console.log("Erro ao carregar itens da comanda:", error);
@@ -50,7 +46,6 @@ export default function ComandaItens() {
     }
   }
 
-  // dispara quando id_comanda estiver disponível / mudar
   useEffect(() => {
     carregarItens();
   }, [id_comanda]);
@@ -70,14 +65,11 @@ export default function ComandaItens() {
   });
 };
 
-  // função utilitária para transformar o valor em número seguro
   const formatarValor = (v: number | string | undefined) => {
     if (v === undefined || v === null) return "0,00";
-    // converte string com vírgula para ponto antes do Number
     const s = String(v).replace(",", ".");
     const n = Number(s);
     if (isNaN(n)) return "0,00";
-    // retorna com duas casas, usando vírgula como separador BR
     return n.toFixed(2).replace(".", ",");
   };
 
@@ -91,7 +83,6 @@ export default function ComandaItens() {
         <FlatList
           data={itens}
           keyExtractor={(item) =>
-            // tolerante a diferentes nomes de id vindos do backend
             String(item.id ?? item.id_comanda ?? item.id_produto ?? Math.random())
           }
           renderItem={({ item }: { item: ComandaItemType }) => (
